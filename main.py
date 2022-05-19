@@ -3,24 +3,25 @@ from snake import Snake
 import time
 
 screen = Screen()
+screen.tracer(0)
 screen.setup(width=600, height=600)
 screen.title("Pop's Snake Game")
 screen.bgcolor("#282828")
-screen.tracer(0)
 snake = Snake()
-
 screen.update()
 
-test_idx = 0
+screen.listen()
+screen.onkey(snake.up, "w")
+screen.onkey(snake.up, "Up")
+screen.onkey(snake.left, "a")
+screen.onkey(snake.left, "Left")
+screen.onkey(snake.down, "s")
+screen.onkey(snake.down, "Down")
+screen.onkey(snake.right, "d")
+screen.onkey(snake.right, "Right")
+
 while snake.is_alive:
     snake.move()
-
-    test_idx += 1
-    if test_idx % 17 == 0:
-        snake.left()
-    elif test_idx % 11 == 0:
-        snake.right()
-
     screen.update()
     time.sleep(0.25)
 
