@@ -5,6 +5,7 @@ FONT_SCORE = ('Arial', 18, 'bold')
 FONT_BIG = ('Arial', 36, 'bold')
 HISCORE_POS = (180, snake.SCREEN_EDGE + 15)
 SCORE_POS = (-220, snake.SCREEN_EDGE + 15)
+HISCORE_FILE = "hiscore"
 
 
 class ScoreBoard(Turtle):
@@ -13,7 +14,7 @@ class ScoreBoard(Turtle):
         self.penup()
         self.hideturtle()
         self.score = 0
-        self.hi_score = 0
+        self.hi_score = self.read_hiscore()
         self.write_score()
 
     def increase_score(self):
@@ -21,6 +22,14 @@ class ScoreBoard(Turtle):
         if self.score > self.hi_score:
             self.hi_score = self.score
         self.write_score()
+
+    def read_hiscore(self):
+        hiscore = 0
+        try:
+            with open(HISCORE_FILE) as f:
+                hiscore = int(f.read())
+        finally:
+            return hiscore
 
     def write_over(self):
         self.write_w_contour("GAME OVER", FONT_BIG, 0, 0)
@@ -46,5 +55,6 @@ class ScoreBoard(Turtle):
         self.write(f"Score: {self.score}", align="center", font=FONT_SCORE)
 
     def reset_score(self):
+        with open(HISCORE_FILE, 'w') as f:
+            f.write(str(self.hi_score))
         self.score = 0
-        # TODO: save hi score here
