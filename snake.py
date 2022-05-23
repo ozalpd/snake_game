@@ -3,15 +3,15 @@ from turtle import Turtle
 MOVE_STEP: int = 18
 SCREEN_EDGE = 320
 STARTING_SEGMENTS = 4
-COLOR = "#f8a0b8"
+COLOR = "#E6E6E6"
 
 
 class Snake:
     segments: list[Turtle] = []
 
     def __init__(self):
-        for i in range(STARTING_SEGMENTS):
-            self.add_segment((MOVE_STEP * -i, 0))
+        self.add_segment((0, 0))  # adding head
+        self.set_tail()
         self.is_alive = True
         self.head = self.segments[0]
         self.turning = False
@@ -24,11 +24,16 @@ class Snake:
         t.goto(pos)
         self.segments.append(t)
 
+    def set_tail(self):
+        for i in range(1, STARTING_SEGMENTS):
+            self.add_segment((MOVE_STEP * -i, 0))
+
     def has_collision(self, any_turtle: Turtle) -> bool:
         collision = False
         for seg in self.segments[1:]:
-            if self.head.distance(seg) < MOVE_STEP - 1:
+            if seg.distance(any_turtle) < MOVE_STEP - 1:
                 collision = True
+                break
         return collision
 
     def extend(self):
@@ -71,3 +76,14 @@ class Snake:
         # detecting collision with edge
         if abs(self.head.ycor()) > SCREEN_EDGE or abs(self.head.xcor() + 8) > SCREEN_EDGE:
             self.is_alive = False
+
+    def reset_game(self):
+        self.head.goto(0, 0)
+        self.head.setheading(0)
+        for s in self.segments[1:]:
+            self.segments.remove(s)
+            s.hideturtle()
+            s.goto(2560, 2560)
+        self.turning = False
+        self.is_alive = True
+        self.set_tail()

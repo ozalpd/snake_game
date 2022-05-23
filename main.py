@@ -1,3 +1,5 @@
+import turtle
+
 from scoreboard import ScoreBoard
 from turtle import Screen, Turtle
 from snake import Snake, COLOR, MOVE_STEP, SCREEN_EDGE
@@ -14,7 +16,7 @@ def set_screen():
     scr_height = (SCREEN_EDGE + (3 * border_thickness)) * 2
     screen.setup(width=scr_width, height=scr_height)
     screen.title("Pop's Snake Game")
-    screen.bgcolor("#282828")
+    screen.bgcolor("#2F373E")
     drawer: Turtle = Turtle()
     drawer.penup()
     drawer.hideturtle()
@@ -35,34 +37,50 @@ def set_screen():
 
 set_screen()
 snake = Snake()
-
 food = Food()
 scoreboard = ScoreBoard()
 
-screen.listen()
-screen.onkey(snake.up, "w")
-screen.onkey(snake.up, "Up")
-screen.onkey(snake.left, "a")
-screen.onkey(snake.left, "Left")
-screen.onkey(snake.down, "s")
-screen.onkey(snake.down, "Down")
-screen.onkey(snake.right, "d")
-screen.onkey(snake.right, "Right")
 
-screen.update()
-
-while snake.is_alive:
-    snake.move()
-    scoreboard.write_score()
-    screen.update()
-    if snake.head.distance(food) < MOVE_STEP / 2:
-        food.refresh()
-        snake.extend()
-        while snake.has_collision(food):
+def play_game():
+    while snake.is_alive:
+        snake.move()
+        scoreboard.write_score()
+        screen.update()
+        if snake.head.distance(food) < MOVE_STEP / 2:
             food.refresh()
-        scoreboard.increase_score()
-    screen.update()
-    time.sleep(0.25)
+            snake.extend()
+            while snake.has_collision(food):
+                food.refresh()
+            scoreboard.increase_score()
+        screen.update()
+        time.sleep(0.25)
+    scoreboard.write_over()
+    scoreboard.reset_score()
 
-scoreboard.write_over()
-screen.exitonclick()
+
+def play_again():
+    snake.reset_game()
+    play_game()
+
+
+def close():
+    if not snake.is_alive:
+        screen.bye()
+
+
+screen.listen()
+screen.onkeypress(snake.up, "w")
+screen.onkeypress(snake.up, "Up")
+screen.onkeypress(snake.left, "a")
+screen.onkeypress(snake.left, "Left")
+screen.onkeypress(snake.down, "s")
+screen.onkeypress(snake.down, "Down")
+screen.onkeypress(snake.right, "d")
+screen.onkeypress(snake.right, "Right")
+
+screen.onkeypress(play_again, "y")
+screen.onkeypress(close, "n")
+
+play_game()
+
+turtle.done()

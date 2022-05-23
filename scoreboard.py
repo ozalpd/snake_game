@@ -3,7 +3,8 @@ import snake
 
 FONT_SCORE = ('Arial', 18, 'bold')
 FONT_BIG = ('Arial', 36, 'bold')
-SCORE_POS = (0, snake.SCREEN_EDGE + 15)
+HISCORE_POS = (180, snake.SCREEN_EDGE + 15)
+SCORE_POS = (-220, snake.SCREEN_EDGE + 15)
 
 
 class ScoreBoard(Turtle):
@@ -12,14 +13,19 @@ class ScoreBoard(Turtle):
         self.penup()
         self.hideturtle()
         self.score = 0
+        self.hi_score = 0
         self.write_score()
 
     def increase_score(self):
         self.score += 1
+        if self.score > self.hi_score:
+            self.hi_score = self.score
         self.write_score()
 
     def write_over(self):
         self.write_w_contour("GAME OVER", FONT_BIG, 0, 0)
+        self.goto(0, -50)
+        self.write("Play again? Hit Y or N: ", align="center", font=FONT_SCORE)
 
     def write_w_contour(self, message: str, font, posX: int, posY: int):
         self.color("#401048")
@@ -33,6 +39,12 @@ class ScoreBoard(Turtle):
 
     def write_score(self):
         self.clear()
-        self.goto(SCORE_POS)
         self.color("#004080")
+        self.goto(HISCORE_POS)
+        self.write(f"Hi Score: {self.hi_score}", align="center", font=FONT_SCORE)
+        self.goto(SCORE_POS)
         self.write(f"Score: {self.score}", align="center", font=FONT_SCORE)
+
+    def reset_score(self):
+        self.score = 0
+        # TODO: save hi score here
